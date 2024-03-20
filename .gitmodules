@@ -1,0 +1,6 @@
+[submodule "Cyclizability-Prediction-Website"]
+	path = Cyclizability-Prediction-Website
+	url = https://github.com/katrina-liu/Cyclizability-Prediction-Website.git
+[submodule "DNAcycP"]
+	path = DNAcycP
+	url = https://github.com/katrina-liu/DNAcycP.git

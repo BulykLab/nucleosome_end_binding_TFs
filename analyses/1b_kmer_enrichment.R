@@ -1,24 +1,22 @@
 library(SELEX)
-library(stringr)
-library(dplyr)
 
 source("utils.R")
 source("config.R")
 
 tf_list = read.table(SELEX_tf_list_file)$V1
 var_length <- 101
-exprs = c("NCAP-SELEX_cycle-4")
+exprs = c("NCAP-SELEX_cycle-4", "HT-SELEX_cycle-4")
 
 input_name <- "cycle-0" ### dir of input library
 input_dir <- paste0(SELEX_data_dir, SELEX_ligand, "/", input_name, "/")
 
+# Store library information gain
 info_gain_df = data.frame(matrix(ncol=3,nrow=0))
 info_gain_path <- "../info_gain.txt"
 
 
 for (tf_name in tf_list){
   # Define variables
-  ### Modify paths, ligands, random region lengths
   tf_data_dir <- paste0(SELEX_data_dir, ligand, "/", tf_name, "/")
   ef_threshold = 1 ### Enrichment threshold to eliminate non-enriched kmers
   
@@ -29,8 +27,7 @@ for (tf_name in tf_list){
     
     # Set up selex config
     ### Modify path for cache
-    selex_wkdir <- "/n/data2/bch/medicine/bulyk/Katrina/capstone/cache/"
-    selex.config(workingDir = selex_wkdir, verbose = F, maxThreadNumber = 4)
+    selex.config(workingDir = SELEX_cache_dir, verbose = F, maxThreadNumber = 4)
     
     # Retrieve cleaned merged reads
     get_clean_file <- function(ddir) {
@@ -41,13 +38,14 @@ for (tf_name in tf_list){
     
     # Load input sample
     input_clean_file <- get_clean_file(input_dir)
-    input_seq_name <- paste(ligand, input_name, sep = "_")
+    input_seq_name <- paste(SELEX_ligand, input_name, sep = "_")
     selex.defineSample(
       seqName = input_seq_name, seqFile = input_clean_file,
       sampleName = input_name, round = 0, rightBarcode = "",
-      leftBarcode = "", varLength = 101 
+      leftBarcode = "", varLength = var_length
     )
-    r0 <- selex.sample(seqName = input_seq_name, sampleName = input_name, round = 0)
+    r0 <- selex.sample(seqName = input_seq_name, sampleName = input_name, 
+                       round = 0)
     
     # Build Markov model
     r0.split <- selex.split(r0)
@@ -93,8 +91,9 @@ for (tf_name in tf_list){
         return (ig)
       }
     ))
-    
-    info_gain_df = rbind(info_gain_df, data.frame(TF=tf_name, Experiment=expr, InfoGain=tf_sample_info_gains[[1]]))
+    info_gain_df = rbind(info_gain_df, data.frame(TF=tf_name, 
+                                                  Experiment=expr, 
+                                                  InfoGain=tf_sample_info_gains[[1]]))
     
     # Get affinities
     get_affinites <- function(sample, sample_dir) {
@@ -103,13 +102,16 @@ for (tf_name in tf_list){
         print(ig)
         
         affinities <- selex.affinities(sample, k = k, markovModel = mm)
-        affinities <- affinities %>% mutate(enrichmentFold = ObservedCount / ExpectedCount)
+        # Calculate K-mer enrichment fold and filter for enriched k-mers
+        affinities <- affinities %>% 
+          mutate(enrichmentFold = ObservedCount / ExpectedCount)
         sorted_affinities = affinities[order(affinities$Affinity,
                                              decreasing = TRUE), ]
-        potential_affinities = sorted_affinities[sorted_affinities$enrichmentFold>ef_threshold,]
-        print(head(sorted_affinities))
+        potential_affinities = 
+          sorted_affinities[sorted_affinities$enrichmentFold>ef_threshold,]
         write.csv(potential_affinities,
-                  file = paste0(tf_data_dir, sample_dir, "/aff_mat_potential_", k,".txt"), quote = F
+                  file = paste0(tf_data_dir, sample_dir, 
+                                "/aff_mat_potential_", k,".txt"), quote = F
         )
       }
       return(affinities)
@@ -118,4 +120,5 @@ for (tf_name in tf_list){
   }
 }
 
+# Save information gain to file
 write.csv(info_gain_df, info_gain_path)

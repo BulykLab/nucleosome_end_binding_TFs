@@ -1,12 +1,15 @@
-library(dplyr)
+source("utils.R")
+source("config.R")
 
 complete_df = read.csv("../data/cyc_results.csv", row.names = 1)
-inner_region = 12:41
+inner_region = 12:41 # region without overlapping with motifs
 
 filtered_df = complete_df %>% filter(dist %in% inner_region)
+# Calculate cyclizability slope in the internal region
+fitted_model = filtered_df %>% group_by(tf, group) %>%
+  do(slope = lm(avg~dist, data = .)$coefficients[[2]])
 
-fitted_model = filtered_df %>% group_by(tf, group) %>% do(slope = lm(avg~dist, data = .)$coefficients[[2]])
-
+# Calculate average
 avgs = complete_df %>% filter(dist %in% inner_region) %>% 
   group_by(tf, group) %>% summarise(avg=mean(avg))
 

@@ -1,3 +1,6 @@
+source("utils.R")
+source("config.R")
+
 end_perc = read.csv("../data/end_binding_percent.csv")
 
 strong_end_binders = end_perc[end_perc$end_bind_perc>0.08,2:3]

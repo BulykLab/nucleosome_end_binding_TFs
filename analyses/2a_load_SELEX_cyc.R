@@ -8,17 +8,19 @@ tf_list = read.table(SELEX_tf_list_file)$V1
 data_dir <- paste0(SELEX_data_dir, SELEX_ligand, "/")
 k=7
 
-
+# Store cyclizability predictions
 complete_df = data.frame(matrix(nrow = 0, ncol=6))
 for (tf_name in tf_list){ 
   tf_dir = paste0(data_dir, tf_name,"/cyc/")
   
+  # Only consider TFs with enough reads for statistical analyses
   if (!(dir.exists(paste0(tf_dir, "sample_left/")) && 
         dir.exists(paste0(tf_dir, "control_left/")) &&
         dir.exists(paste0(tf_dir, "ht_left/")))){
     next
   }
   
+  # Load cyc predictions and build a data frame for plots
   tf_sample_left = load_cyc_from_dir(paste0(tf_dir, "sample_left/"))
   tf_sample_right_rc = load_cyc_from_dir(paste0(tf_dir, "sample_right_rc/"))
   tf_sample = cbind(tf_sample_left, tf_sample_right_rc)

@@ -50,4 +50,7 @@ rsconnect/
 
 
 # R Config
-analyses/config.R
+# analyses/config.R
+
+# SELEX data
+data/lig147/*

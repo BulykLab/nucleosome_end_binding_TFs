@@ -13,7 +13,7 @@ input_name <- "cycle-0" ### dir of input library
 input_dir <- paste0(SELEX_data_dir, SELEX_ligand, "/", input_name, "/")
 
 info_gain_df = data.frame(matrix(ncol=3,nrow=0))
-info_gain_path <- paste0(SELEX_data_dir, "info_gain_rep.txt")
+info_gain_path <- "../info_gain.txt"
 
 
 for (tf_name in tf_list){

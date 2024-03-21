@@ -1,13 +1,24 @@
-# nucleosome_end_binding_TFs
+# DNA flexibility modules transcription factor binding to nucleosomes
 
 ## Prerequisite Softwares
 
-PEAR
+Install the following softwares to run analyses:
+
+1.  PEAR
+2.  DNAcycP
+3.  Cyclizability Prediction Website
 
 ## Prerequisite R Dependencies
 
-selex
+ShortRead dplyr stringr glue SELEX rstatix matrixStats
 
-## Data Preparation
+## Reproducing the analyses
 
-Download data report here to directory `data`: [link](https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJEB22684&result=read_run&fields=study_accession,sample_accession,experiment_accession,run_accession,tax_id,scientific_name,fastq_ftp,submitted_ftp,sra_ftp,bam_ftp&format=tsv&download=true&limit=0)
+See `analysis/README.md`
+
+## Reproducing the figures
+
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

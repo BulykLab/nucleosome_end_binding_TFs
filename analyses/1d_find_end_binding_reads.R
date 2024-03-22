@@ -115,4 +115,5 @@ for (tf_name in tf_list){
 write.table(cyc_script, "../DNAcycP/selex_cyc_script.sh",
             quote=F,row.names = F, col.names = F)
 
+perc_end_df = data.frame(end_bind_perc = perc_ends, tf=good_tfs)
 write.csv(perc_end_df, "../data/end_binding_percent.csv")

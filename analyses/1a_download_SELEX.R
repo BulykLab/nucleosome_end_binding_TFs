@@ -34,11 +34,11 @@ for (tf_name in tf_list){
   # Find all urls for tf within ligand library
   if (input){
     tf_tbl <- report_tbl %>%
-      filter(grepl(ligand, submitted_ftp)) %>%
+      filter(grepl(SELEX_ligand, submitted_ftp)) %>%
       filter(grepl(paste0(tf_name,"_"), submitted_ftp)) 
   } else {
     tf_tbl <- report_tbl %>%
-      filter(grepl(ligand, submitted_ftp)) %>%
+      filter(grepl(SELEX_ligand, submitted_ftp)) %>%
       filter(grepl(paste0(tf_name,"_"), submitted_ftp)) %>%
       filter(grepl("cycle-4", submitted_ftp))
   }
@@ -76,7 +76,7 @@ for (tf_name in tf_list){
   merge_pe_reads <- function(dests) {
     read_files <- str_split(dests, ";")
     if (input) {
-      outputPrefix <- paste0(tf_data_dir, glue("input_{ligand}_cycle-0"))
+      outputPrefix <- paste0(tf_data_dir, glue("input_{SELEX_ligand}_cycle-0"))
       print(outputPrefix)
       
       ### Modify path for PEAR

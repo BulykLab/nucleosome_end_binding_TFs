@@ -12,12 +12,12 @@ input_dir <- paste0(SELEX_data_dir, SELEX_ligand, "/", input_name, "/")
 
 # Store library information gain
 info_gain_df = data.frame(matrix(ncol=3,nrow=0))
-info_gain_path <- "../info_gain.txt"
+info_gain_path <- "../data/info_gain.txt"
 
 
 for (tf_name in tf_list){
   # Define variables
-  tf_data_dir <- paste0(SELEX_data_dir, ligand, "/", tf_name, "/")
+  tf_data_dir <- paste0(SELEX_data_dir, SELEX_ligand, "/", tf_name, "/")
   ef_threshold = 1 ### Enrichment threshold to eliminate non-enriched kmers
   
   for (expr in exprs){
@@ -66,7 +66,7 @@ for (tf_name in tf_list){
       seq_file <- get_clean_file(paste0(tf_data_dir, sample_dir, "/"))
       cycle <- str_split(sample_dir, "_")[[1]][2]
       round <- strtoi(substr(cycle, nchar(cycle), nchar(cycle)))
-      sample_seq_name <- paste(ligand, tf_name, sample_dir, sep = "_")
+      sample_seq_name <- paste(SELEX_ligand, tf_name, sample_dir, sep = "_")
       # Load sample
       selex.defineSample(
         seqName = sample_seq_name, seqFile = seq_file, sampleName = sample_dir,

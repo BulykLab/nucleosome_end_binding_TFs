@@ -1,9 +1,9 @@
-sourch("config.R")
-sourch("utils.R")
+source("config.R")
+source("utils.R")
 
 options(timeout = 500)
 
-tf_list = read.table(SELEX_tf_list_file)$V1
+tf_list = read.table(SELEX_library_file)$V1
 
 
 ### Modify path here
@@ -11,7 +11,7 @@ data_dir <- paste0(SELEX_data_dir, SELEX_ligand, "/")
 
 # Create the data folder if it does not exist
 if (!file.exists(data_dir)) {
-  dir.create(data_dir)
+  dir.create(data_dir, recursive = TRUE)
 }
 
 

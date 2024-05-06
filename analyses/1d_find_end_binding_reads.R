@@ -110,7 +110,7 @@ for (tf_name in tf_list){
   cyc_script = append(cyc_script,
                       glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "ht_left.fasta")} {paste0(tf_cyc_dir, "ht_left.csv")}' ))
   cyc_script = append(cyc_script,
-                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "ht_right_rc.fasta")} {paste0(tf_cyc_dir, "ht_right.csv/")}' ))
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "ht_right_rc.fasta")} {paste0(tf_cyc_dir, "ht_right.csv")}' ))
   
 }
 

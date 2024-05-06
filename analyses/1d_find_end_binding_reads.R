@@ -50,7 +50,7 @@ for (tf_name in tf_list){
   
   motifs = read.table(paste0(tf_sample_dir,"final_enriched_kmers.txt"))$V1
   
-  # Find top enriched motifs in sequence libraries
+  # Find the positions of the top enriched motifs in library sequences
   sample_positions = to_get_many_kmer_match_reads(motifs, sample_seqs)
   control_positions = to_get_many_kmer_match_reads(motifs, control_seqs)
   ht_positions = to_get_many_kmer_match_reads(motifs, ht_seqs)
@@ -66,53 +66,55 @@ for (tf_name in tf_list){
   right_ht = filter_seq_indices(ht_positions, (pos_col-3):pos_col)
   
   # Only store sequences from libraries containing at least 500 end binding reads
-  if (length(left_sample)+length(right_sample) >= 500){
-    left_sample_seqs = sample_fastq[left_sample,]
-    right_sample_seqs = sample_fastq[right_sample, ]
-    # Get reverse complement of reads with end binding on exits
-    right_sample_rc_seqs = reverseComplement(right_sample_seqs)
-    writeFasta(left_sample_seqs, paste0(tf_cyc_dir, "sample_left.fasta"))
-    writeFasta(right_sample_rc_seqs, paste0(tf_cyc_dir, 
-                                            "sample_right_rc.fasta"))
-    # Add slurm commands for predicting cyclizability with DNAcycP
-    cyc_script = append(cyc_script, 
-                        glue('sbatch run_cycp_tmp.sh {paste0(tf_cyc_dir, "sample_left.fasta")} {paste0(tf_cyc_dir, "sample_left/")}' ))
-    cyc_script = append(cyc_script, 
-                        glue('sbatch run_cycp_tmp.sh {paste0(tf_cyc_dir, "sample_right_rc.fasta")} {paste0(tf_cyc_dir, "sample_right_rc/")}' ))
-    
-    # Calculate end binding percentages
-    perc_ends = c(perc_ends, sum(sample_positions[,c(1:4,(pos_col-3):pos_col)])/sum(sample_positions))
-    good_tfs = c(good_tfs, tf_name)
+  if (length(left_sample)+length(right_sample) < 500 || 
+      length(left_control)+length(right_control) < 500 || 
+      length(left_ht)+length(right_ht) < 500){
+    next
   }
   
-  if (length(left_control)+length(right_control) >= 500){
-    left_control_seqs = control_fastq[left_control,]
-    right_control_seqs = control_fastq[right_control, ]
-    right_control_rc_seqs = reverseComplement(right_control_seqs)
-    writeFasta(left_control_seqs, paste0(tf_cyc_dir, "control_left.fasta"))
-    writeFasta(right_control_rc_seqs, paste0(tf_cyc_dir,
-                                             "control_right_rc.fasta"))
-    cyc_script = append(cyc_script,
-                        glue('sbatch run_cycp_tmp.sh {paste0(tf_cyc_dir, "control_left.fasta")} {paste0(tf_cyc_dir, "control_left/")}' ))
-    cyc_script = append(cyc_script,
-                        glue('sbatch run_cycp_tmp.sh {paste0(tf_cyc_dir, "control_right_rc.fasta")} {paste0(tf_cyc_dir, "control_right_rc/")}' ))
+  left_sample_seqs = sample_fastq[left_sample,]
+  right_sample_seqs = sample_fastq[right_sample, ]
+  # Get reverse complement of reads with end binding on exits
+  right_sample_rc_seqs = reverseComplement(right_sample_seqs)
+  writeFasta(left_sample_seqs, paste0(tf_cyc_dir, "sample_left.fasta"))
+  writeFasta(right_sample_rc_seqs, paste0(tf_cyc_dir, 
+                                          "sample_right_rc.fasta"))
+  # Add slurm commands for predicting cyclizability with DNAcycP
+  cyc_script = append(cyc_script, 
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "sample_left.fasta")} {paste0(tf_cyc_dir, "sample_left.csv")}' ))
+  cyc_script = append(cyc_script, 
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "sample_right_rc.fasta")} {paste0(tf_cyc_dir, "sample_right_rc.csv")}' ))
+  
+  # Calculate end binding percentages
+  perc_ends = c(perc_ends, sum(sample_positions[,c(1:4,(pos_col-3):pos_col)])/sum(sample_positions))
+  good_tfs = c(good_tfs, tf_name)
+  
+  # Do the same for nucleosome control
+  left_control_seqs = control_fastq[left_control,]
+  right_control_seqs = control_fastq[right_control, ]
+  right_control_rc_seqs = reverseComplement(right_control_seqs)
+  writeFasta(left_control_seqs, paste0(tf_cyc_dir, "control_left.fasta"))
+  writeFasta(right_control_rc_seqs, paste0(tf_cyc_dir,
+                                           "control_right_rc.fasta"))
+  cyc_script = append(cyc_script,
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "control_left.fasta")} {paste0(tf_cyc_dir, "control_left.csv")}' ))
+  cyc_script = append(cyc_script,
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "control_right_rc.fasta")} {paste0(tf_cyc_dir, "control_right_rc.csv")}' ))
 
-  }
-
-  if (length(left_ht)+length(right_ht) >= 500){
-    left_ht_seqs = ht_fastq[left_ht,]
-    right_ht_seqs = ht_fastq[right_ht, ]
-    right_ht_rc_seqs = reverseComplement(right_ht_seqs)
-    writeFasta(left_ht_seqs, paste0(tf_cyc_dir, "ht_left.fasta"))
-    writeFasta(right_ht_rc_seqs, paste0(tf_cyc_dir, "ht_right_rc.fasta"))
-    cyc_script = append(cyc_script,
-                        glue('sbatch run_cycp_tmp.sh {paste0(tf_cyc_dir, "ht_left.fasta")} {paste0(tf_cyc_dir, "ht_left/")}' ))
-    cyc_script = append(cyc_script,
-                        glue('sbatch run_cycp_tmp.sh {paste0(tf_cyc_dir, "ht_right_rc.fasta")} {paste0(tf_cyc_dir, "ht_right_rc/")}' ))
-  }
+  # Do the same for free DNA
+  left_ht_seqs = ht_fastq[left_ht,]
+  right_ht_seqs = ht_fastq[right_ht, ]
+  right_ht_rc_seqs = reverseComplement(right_ht_seqs)
+  writeFasta(left_ht_seqs, paste0(tf_cyc_dir, "ht_left.fasta"))
+  writeFasta(right_ht_rc_seqs, paste0(tf_cyc_dir, "ht_right_rc.fasta"))
+  cyc_script = append(cyc_script,
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "ht_left.fasta")} {paste0(tf_cyc_dir, "ht_left.csv")}' ))
+  cyc_script = append(cyc_script,
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "ht_right_rc.fasta")} {paste0(tf_cyc_dir, "ht_right.csv/")}' ))
+  
 }
 
-write.table(cyc_script, "../DNAcycP/selex_cyc_script.sh",
+write.table(cyc_script, "../Cyclizability-Prediction-Website/selex_cyc_script.sh",
             quote=F,row.names = F, col.names = F)
 
 perc_end_df = data.frame(end_bind_perc = perc_ends, tf=good_tfs)

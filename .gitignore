@@ -54,3 +54,4 @@ rsconnect/
 
 # SELEX data
 data/SELEX_data/*
+data/cache/*

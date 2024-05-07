@@ -74,16 +74,20 @@ for (tf_name in tf_list){
   
   left_sample_seqs = sample_fastq[left_sample,]
   right_sample_seqs = sample_fastq[right_sample, ]
+  
+  sample_left_primer = DNAStringSet(paste0(FW_primer, as.character(sread(left_sample_seqs)), RV_primer))
+  writeFasta(ShortRead(sample_left_primer, left_sample_seqs@id), paste0(tf_cyc_dir, "sample_left_primer.fasta"))
+  
   # Get reverse complement of reads with end binding on exits
   right_sample_rc_seqs = reverseComplement(right_sample_seqs)
-  writeFasta(left_sample_seqs, paste0(tf_cyc_dir, "sample_left.fasta"))
-  writeFasta(right_sample_rc_seqs, paste0(tf_cyc_dir, 
-                                          "sample_right_rc.fasta"))
+  sample_right_rc_primer = DNAStringSet(paste0(RV_primer_rc, as.character(sread(right_sample_rc_seqs)), FW_primer_rc))
+  writeFasta(ShortRead(sample_right_rc_primer, right_sample_rc_seqs@id), paste0(tf_cyc_dir, "sample_right_rc_primer.fasta"))
+  
   # Add slurm commands for predicting cyclizability with DNAcycP
   cyc_script = append(cyc_script, 
-                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "sample_left.fasta")} {paste0(tf_cyc_dir, "sample_left.csv")}' ))
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "sample_left_primer.fasta")} {paste0(tf_cyc_dir, "sample_left_primer.csv")}' ))
   cyc_script = append(cyc_script, 
-                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "sample_right_rc.fasta")} {paste0(tf_cyc_dir, "sample_right_rc.csv")}' ))
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "sample_right_rc_primer.fasta")} {paste0(tf_cyc_dir, "sample_right_rc_primer.csv")}' ))
   
   # Calculate end binding percentages
   perc_ends = c(perc_ends, sum(sample_positions[,c(1:4,(pos_col-3):pos_col)])/sum(sample_positions))
@@ -92,25 +96,34 @@ for (tf_name in tf_list){
   # Do the same for nucleosome control
   left_control_seqs = control_fastq[left_control,]
   right_control_seqs = control_fastq[right_control, ]
+  
+  control_left_primer = DNAStringSet(paste0(FW_primer, as.character(sread(left_control_seqs)), RV_primer))
+  writeFasta(ShortRead(control_left_primer, left_control_seqs@id), paste0(tf_cyc_dir, "control_left_primer.fasta"))
+  
+  
   right_control_rc_seqs = reverseComplement(right_control_seqs)
-  writeFasta(left_control_seqs, paste0(tf_cyc_dir, "control_left.fasta"))
-  writeFasta(right_control_rc_seqs, paste0(tf_cyc_dir,
-                                           "control_right_rc.fasta"))
+  control_right_rc_primer = DNAStringSet(paste0(RV_primer_rc, as.character(sread(right_control_rc_seqs)), FW_primer_rc))
+  writeFasta(ShortRead(control_right_rc_primer, right_control_rc_seqs@id), paste0(tf_cyc_dir, "control_right_rc_primer.fasta"))
+  
   cyc_script = append(cyc_script,
-                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "control_left.fasta")} {paste0(tf_cyc_dir, "control_left.csv")}' ))
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "control_left_primer.fasta")} {paste0(tf_cyc_dir, "control_left_primer.csv")}' ))
   cyc_script = append(cyc_script,
-                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "control_right_rc.fasta")} {paste0(tf_cyc_dir, "control_right_rc.csv")}' ))
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "control_right_rc_primer.fasta")} {paste0(tf_cyc_dir, "control_right_rc_primer.csv")}' ))
 
   # Do the same for free DNA
   left_ht_seqs = ht_fastq[left_ht,]
   right_ht_seqs = ht_fastq[right_ht, ]
+  ht_left_primer = DNAStringSet(paste0(FW_primer, as.character(sread(left_ht_seqs)), RV_primer))
+  writeFasta(ShortRead(ht_left_primer, left_ht_seqs@id), paste0(tf_cyc_dir, "ht_left_primer.fasta"))
+  
   right_ht_rc_seqs = reverseComplement(right_ht_seqs)
-  writeFasta(left_ht_seqs, paste0(tf_cyc_dir, "ht_left.fasta"))
-  writeFasta(right_ht_rc_seqs, paste0(tf_cyc_dir, "ht_right_rc.fasta"))
+  ht_right_rc_primer = DNAStringSet(paste0(RV_primer_rc, as.character(sread(right_ht_rc_seqs)), FW_primer_rc))
+  writeFasta(ShortRead(ht_right_rc_primer, right_ht_rc_seqs@id), paste0(tf_cyc_dir, "ht_right_rc_primer.fasta"))
+  
   cyc_script = append(cyc_script,
-                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "ht_left.fasta")} {paste0(tf_cyc_dir, "ht_left.csv")}' ))
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "ht_left_primer.fasta")} {paste0(tf_cyc_dir, "ht_left_primer.csv")}' ))
   cyc_script = append(cyc_script,
-                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "ht_right_rc.fasta")} {paste0(tf_cyc_dir, "ht_right.csv")}' ))
+                      glue('sbatch pred_fasta_cpu.sh {paste0(tf_cyc_dir, "ht_right_rc_primer.fasta")} {paste0(tf_cyc_dir, "ht_right_rc_primer.csv")}' ))
   
 }
 
@@ -118,4 +131,4 @@ write.table(cyc_script, "../Cyclizability-Prediction-Website/selex_cyc_script.sh
             quote=F,row.names = F, col.names = F)
 
 perc_end_df = data.frame(end_bind_perc = perc_ends, tf=good_tfs)
-write.csv(perc_end_df, "../data/end_binding_percent.csv")
+write.csv(perc_end_df, SELEX_end_binding_perc)

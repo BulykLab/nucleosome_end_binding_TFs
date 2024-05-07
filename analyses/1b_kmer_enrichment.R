@@ -12,7 +12,7 @@ input_dir <- paste0(SELEX_data_dir, SELEX_ligand, "/", input_name, "/")
 
 # Store library information gain
 info_gain_df = data.frame(matrix(ncol=3,nrow=0))
-info_gain_path <- "../data/info_gain.txt"
+
 
 
 for (tf_name in tf_list){

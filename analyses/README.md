@@ -20,6 +20,8 @@ Go to the directory `../Cyclizability-Prediction-Website/` for predicting sequen
 ```{bash}
 chmod 777 selex_cyc_script.sh # This is a script that will be generated in 1d_find_end_binding_reads.R
 ./selex_cyc_script.sh
+chmod 777 selex_internal_cyc_script.sh # This is a script that will be generated in 1e_find_internal_end_binding_reads.R
+./selec_internal_cyc_script.sh
 ```
 
 ## 2. Cyclizability analyses

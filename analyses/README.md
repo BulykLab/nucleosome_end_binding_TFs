@@ -62,7 +62,11 @@ awk -v OFS='\t' '{if (NR>1) {print $1, $2, $3, $4, $5}} \
 ```
 
 - Verify nucleosome positions are not biased
+
+Required packages: bedtools, bedops, seqoutbias
+
 Seqoutbias can be downloaded here: [https://guertinlab.github.io/seqOutBias/](https://guertinlab.github.io/seqOutBias/).
+
 
 ```{bash}
  ./seqOutBias hg19.fa <path/to/data/ENCFF000VMJ.bam> --no-scale --skip-bw --stranded --shift-counts --pdist=100:400
@@ -106,9 +110,16 @@ scanMotifGenomeWide.pl ../data/CEBPB_homer_out/homerResults/motif1.motif hg38 \
 
 - Separate bound/unbound nucleosomes
 
+
 ```{bash}
 ./3a_get_binding_nuc.sh  ../data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed> \
   ../data/CEBPB_homer_motif_hg38.bed 8 ../data/
 ```
 
 - Extract nucleosome sequence and predict for cyclizability
+
+The following command is used to extract bed file sequences. 
+```{bash}
+homerTools extract hg38 <bed-file> -fa > <fasta-file> 
+```
+Cyclizability is predicted by using `pred_fasta_cpu.sh` script in the directory `Cyclizability-Prediction-Website/`.

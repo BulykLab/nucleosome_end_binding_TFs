@@ -40,7 +40,7 @@ for (tf_name in tf_list){
   plot_df = rbind(tf_sample_plot_df, tf_control_plot_df, tf_ht_plot_df)
   complete_df = rbind(complete_df, plot_df)
   
-  
+  # Load cyc predictions for internal binding reads
   if (!file.exists(paste0(tf_cyc_dir, "sample_left_1_5_primer.csv"))){
     next
   }

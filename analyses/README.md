@@ -5,13 +5,15 @@ Open `config.R` file and update the paths to the PEAR software and other path-re
 
 ## 1. Filtering, classification, and analysis of NCAP-SELEX data
 
-### 1a. Downloading the SELEX data
+- a. Downloading the SELEX data with `1a_download_SELEX.R`
 
-### 1b. Find k-mer enrichment
+- b. Find k-mer enrichment with `1b_kmer_enrichment.R`
 
-### 1c. Determine k-mers used as TF binding motif
+- c. Determine k-mers used as TF binding motif with `1c_find_binding_kmers.R`
 
-### 1d. Filter for end binding reads in each SELEX library
+- d. Filter for end binding reads in each SELEX library with `1d_find_end_binding_reads.R`
+
+- e. Filter for internal binding reads in each NCAP-SELEX library with `1e_find_internal_end_finding_reads.R`
 
 ## 1.5 Predicting cyclizability of processed SELEX data 
 
@@ -21,18 +23,18 @@ Go to the directory `../Cyclizability-Prediction-Website/` for predicting sequen
 chmod 777 selex_cyc_script.sh # This is a script that will be generated in 1d_find_end_binding_reads.R
 ./selex_cyc_script.sh
 chmod 777 selex_internal_cyc_script.sh # This is a script that will be generated in 1e_find_internal_end_binding_reads.R
-./selec_internal_cyc_script.sh
+./selex_internal_cyc_script.sh
 ```
 
 ## 2. Cyclizability analyses of SELEX data
 
-### 2a. Load and summarize cyclizability prediction results
+- a. Load and summarize cyclizability prediction results with `2a_load_SELEX_cyc.R`
 
-### 2b. Calculate the cyclizability slope in the internal sequence region
+- b. Calculate the cyclizability slope in the internal sequence region with `2b_calc_cyc_slope_avg.R`
 
-### 2c. Filter for TFs with high information gain in HT-SELEX library
+- c. Filter for TFs with high information gain in HT-SELEX library with `2c_info_gain_filter.R`
 
-### 2d. Filter for TFs with end binding enrichment and low end binding enrichment
+- d. Filter for TFs with end binding enrichment and low end binding enrichment with `2d_end_binding_filter.R`
 
 ## 3. Cyclizability analysis of K562 nucleosomes bound\not bound by CEBPB
 
@@ -58,6 +60,20 @@ awk -v OFS='\t' '{if (NR>1) {print $1, $2, $3, $4, $5}} \
   <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.xls> > \
   <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed>'
 ```
+
+- Verify nucleosome positions are not biased
+Seqoutbias can be downloaded here: [https://guertinlab.github.io/seqOutBias/](https://guertinlab.github.io/seqOutBias/).
+
+```{bash}
+ ./seqOutBias hg19.fa <path/to/data/ENCFF000VMJ.bam> --no-scale --skip-bw --stranded --shift-counts --pdist=100:400
+
+# Postprocessing reads to signal
+awk -v OFS='\t' '{if ($6=="+") {print $1, $2, $2+35, $4, $5, $6} else {print $1, $3-35,$3, $4, -$5, $6}}' <path/to/data/ENCFF000VMJ_scaled.bed> > <path/to/data/ENCFF000VMM_scaled_pp.bed>
+sort-bed <path/to/data/ENCFF000VMM_scaled_pp.bed> > <path/to/data/ENCFF000VMM_scaled_pp_sorted.bed>
+bedops --partition <path/to/data/ENCFF000VMM_scaled_pp_sorted.bed> | bedmap --echo --sum --delim '\t'  - <path/to/data/ENCFF000VMM_scaled_pp_sorted.bed> > <path/to/data/ENCFF000VMM_scaled_pp_sorted_merged.bedgraph>
+```
+
+Positions can be compared using a genome browser with <path/to/data/ENCFF000VMM_scaled_pp_sorted_merged.bedgraph> and the original bam file.
 
 - Convert hg19 nucleosomes to hg38 coordinates
 

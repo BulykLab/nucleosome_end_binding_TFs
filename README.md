@@ -16,6 +16,11 @@ Go to directory `DNAcycP/` for instructions of building necessary dependencies a
 
 Go to directory `Cyclizability-Prediction-Website/` and build a conda environment with the dependencies listed in `Cyclizability-Prediction-Website/requirements.txt`. 
 
+4. Softwares required for running genomic analysis
+
+See `analysis/README.md`
+
+
 ## Prerequisite R Dependencies
 
 ShortRead dplyr stringr glue SELEX rstatix matrixStats

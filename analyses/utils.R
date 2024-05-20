@@ -82,3 +82,28 @@ get_slopes = function(cyc, inpath, outpath=NULL){
                      slope_val=storage[slope_ord]))
   
 }
+
+# Get the frequency of the spectrum from a signal of length(region) long
+get_nuc_spectrum_x = function(region){
+  sig = rep(1, times = length(region))
+  x.spec = spectrum(sig, log="no", plot=F)
+  return (x.spec$freq)
+}
+
+# Compute the averaged nucleotide spatial frequency of the region on sequences
+get_nuc_spectrum_from_sample = function(nuc, seqs, region){
+  
+  nuc_pos = to_get_many_kmer_match_reads(c(nuc), seqs, nchar(seqs[1]))
+  nuc_pos_clean = nuc_pos[,region]
+  
+  get_fft = function(i){
+    sig = nuc_pos_clean[i,]
+    x.spec = spectrum(sig, log="no", plot=F)
+    spy <- 2*x.spec$spec
+    return (spy)
+  }
+  
+  all_fft = sapply(1:nrow(nuc_pos_clean), get_fft)
+  spec = rowMeans(all_fft)
+  return (spec)
+}

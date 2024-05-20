@@ -3,7 +3,6 @@ source("config.R")
 
 tf_list = read.table(SELEX_tf_list_file)$V1
 data_dir <- paste0(SELEX_data_dir, SELEX_ligand, "/")
-k=7
 
 cyc_script = c() # Store cyc commands for running DNA cycP on slurm
 
@@ -24,7 +23,7 @@ for (tf_name in tf_list){
   
   # Creating directory to save end binding reads and cyclizability predictions
   tf_cyc_dir <- paste0(tf_dir,"cyc/")
-  if (!file.exists(tf_cyc_dir)) {
+  if (!dir.exists(tf_cyc_dir)) {
     dir.create(tf_cyc_dir)
   }
   

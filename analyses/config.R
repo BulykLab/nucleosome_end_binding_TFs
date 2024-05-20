@@ -24,4 +24,11 @@ SELEX_internal_cyc_result_csv = "../data/SELEX_test_internal_cyc_results.csv"
 SELEX_cyc_slope_avg = "../data/SELEX_cyc_slope_avg.csv"
 SELEX_cyc_ht_thres_tf_csv = "../data/ht_thres_TF.csv"
 
+left_region=35:74
+right_region=76:115
+nuc="A"
+SELEX_fft_left = "../data/SELEX_fft_A_35_74.csv"
+SELEX_fft_right = "../data/SELEX_fft_A_76_115.csv"
+
+
 pear_path = "/home/xil493/capstone/pear-0.9.11-linux-x86_64/bin/pear" ##### Update path to pear

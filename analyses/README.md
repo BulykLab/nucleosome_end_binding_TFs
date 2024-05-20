@@ -14,6 +14,7 @@ Open `config.R` file and update the paths to the PEAR software and other path-re
 - d. Filter for end binding reads in each SELEX library with `1d_find_end_binding_reads.R`
 
 - e. Filter for internal binding reads in each NCAP-SELEX library with `1e_find_internal_end_finding_reads.R`
+- f. Compute nucleotide spatial periodicity with FFT with `1f_FFT_end_binding_reads.R`
 
 ## 1.5 Predicting cyclizability of processed SELEX data 
 
@@ -108,12 +109,28 @@ scanMotifGenomeWide.pl ../data/CEBPB_homer_out/homerResults/motif1.motif hg38 \
   -bed > ../data/CEBPB_homer_motif_hg38.bed
 ```
 
-- Separate bound/unbound nucleosomes
-
+- Separate bound/unbound motifs
 
 ```{bash}
-./3a_get_binding_nuc.sh  ../data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed> \
-  ../data/CEBPB_homer_motif_hg38.bed 8 ../data/
+bedtools intersect -wa -a ../data/CEBPB_homer_motif_hg38.bed -b ../data/ENCFF712ZNR.bed -f 1> ../data/CEBPB_homer_motif_with_ChIP_hg38.bed
+
+bedtools intersect -v -wa -a ../data/CEBPB_homer_motif_hg38.bed -b ../data/ENCFF712ZNR.bed > ../data/CEBPB_homer_motif_without_ChIP_hg38.bed
+```
+
+- Separate bound/unbound nucleosomes
+
+```{bash}
+./3a_get_binding_nuc.sh  ../data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed \
+  ../data/CEBPB_homer_motif_with_ChIP_hg38.bed 10 ../data/CEBPB_bound
+./3a_get_binding_nuc.sh  ../data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed \
+  ../data/CEBPB_homer_motif_without_ChIP_hg38.bed 10 ../data/CEBPB_unbound
+```
+
+- Randomly select 20000 unbound nucleosomes as control
+
+```{bash}
+shuf -n 10000 ../data/CEBPB_unbound/head_motif_nuc.bed > head_nuc_random_10000.bed
+shuf -n 10000 ../data/CEBPB_unbound/tail_motif_nuc.bed > tail_nuc_random_10000.bed
 ```
 
 - Extract nucleosome sequence and predict for cyclizability

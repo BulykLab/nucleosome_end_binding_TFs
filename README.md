@@ -1,6 +1,10 @@
 # DNA flexibility modules transcription factor binding to nucleosomes
 
-## Prerequisite Softwares
+## Cloning the repo and related submodules
+
+git clone --recurse-submodules https://github.com/BulykLab/nucleosome_end_binding_TFs.git
+
+## Prerequisite softwares
 
 Install the following softwares to run analyses:
 

@@ -2,7 +2,12 @@
 
 ## Cloning the repo and related submodules
 
+In the terminal/CMD, use the following command to clone the repo and related submodules
+
+```{bash}
 git clone --recurse-submodules https://github.com/BulykLab/nucleosome_end_binding_TFs.git
+```
+
 
 ## Prerequisite softwares
 

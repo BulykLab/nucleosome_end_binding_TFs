@@ -126,10 +126,8 @@ bedtools intersect -v -wa -a CEBPB_motif1_hg38.bed -b all_peaks_ENCFF309ZJM.bed 
 - Separate bound/unbound nucleosomes
 In the `data` directory at the top level of this repo, 
 ```{bash}
-../analysis/3a_get_binding_nuc.sh  k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.L140.bed \
-  ../data/CEBPB_motif1_with_IDR_thres_peaks_hg38.bed sample
-../analysis/3a_get_binding_nuc.sh  k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.L140.bed \
-  ../data/CEBPB_motif1_no_peak_hg38.bed control
+../analysis/3a_get_binding_nuc.sh  k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.L140.bed CEBPB_motif1_with_IDR_thres_peaks_hg38.bed sample
+../analysis/3a_get_binding_nuc.sh  k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.L140.bed CEBPB_motif1_no_peak_hg38.bed control
 ```
 
 - Extract nucleosome sequence and predict for cyclizability

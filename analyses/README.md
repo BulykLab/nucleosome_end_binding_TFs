@@ -53,12 +53,10 @@ Go to the DANPOS directory, then run the following commands:
 ```{bash}
 python danpos.py dpos <path/to/data/ENCFF000VMJ.bam> -o <path/to/data/k562_nucleosomes/>
 ```
-Convert DANPOS output `.xls` file to bed format.
+In the `data` directory at the top level of this repo, convert DANPOS output `.xls` file to bed format.
 
 ```{bash}
-awk -v OFS='\t' '{if (NR>1) {print $1, $2, $3, $4, $5}} \
-  <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.xls> > \
-  <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed>'
+awk -v OFS='\t' '{if (NR>1) {print $1, $2, $3, $4, $5}} k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.xls > k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed
 ```
 
 - Verify nucleosome positions are not biased
@@ -83,16 +81,17 @@ Positions can be compared using a genome browser with <path/to/data/ENCFF000VMM_
 
 Download liftOver executable here: [https://genome-store.ucsc.edu/](https://genome-store.ucsc.edu/) and the hg19 to hg38 chain file here: [https://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz).
 
+In the `data` directory at the top level of this repo,
 ```{bash}
-<liftover_executable> <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed> \
-  hg19ToHg38.over.chain.gz \
-  <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.bed> \
+<liftover_executable> data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed \
+  <path/to/hg19ToHg38.over.chain.gz> \
+  data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.bed \
   unMapped
 ```
 - Filtering for nucleosome peaks with 140-bp
-
+In the `data` directory at the top level of this repo,
 ```{bash}
-awk -v OFS='\t' '{if($3-$2==140){print $1,$2,$3}}' <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.bed> > <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.L140.bed>
+awk -v OFS='\t' '{if($3-$2==140){print $1,$2,$3}}' k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.bed > k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.L140.bed
 ```
 
 - Download ChIP-seq data
@@ -100,47 +99,43 @@ In the `data` directory at the top level of this repo,
 ```{bash}
 wget https://www.encodeproject.org/files/ENCFF712ZNR/@@download/ENCFF712ZNR.bed.gz
 gunzip ENCFF712ZNR.bed.gz
-mv ../
+mv ENCFF712ZNR.bed IDR_thres_peaks_ENCFF712ZNR.bed
+wget https://www.encodeproject.org/files/ENCFF309ZJM/@@download/ENCFF309ZJM.bed.gz
+gunzip ENCFF309ZJM.bed.gz
+mv ENCFF309ZJM.bed all_peaks_ENCFF309ZJM.bed
 ```
 
 - Use Homer to find CEBPB binding motifs and their positions.
 Homer can be downloaded and installed following instructions here: [http://homer.ucsd.edu/homer/](http://homer.ucsd.edu/homer/)
-
+In the `data` directory at the top level of this repo, 
 ```{bash}
-findMotifsGenome.pl ../data/ENCFF712ZNR.bed hg38 ../data/CEBPB_homer_out/ -size given \
+findMotifsGenome.pl IDR_thres_peaks_ENCFF712ZNR.bed hg38 ../data/CEBPB_homer_out/ -size given \
   -preparsedDir preparsed
-scanMotifGenomeWide.pl ../data/CEBPB_homer_out/homerResults/motif1.motif hg38 \
-  -bed > ../data/CEBPB_homer_motif_hg38.bed
+scanMotifGenomeWide.pl CEBPB_homer_out/homerResults/motif1.motif hg38 \
+  -bed > CEBPB_homer_out/CEBPB_motif1_hg38.bed
 ```
 
 - Separate bound/unbound motifs
-
+In the `data` directory at the top level of this repo, 
 ```{bash}
-bedtools intersect -wa -a ../data/CEBPB_homer_motif_hg38.bed -b ../data/ENCFF712ZNR.bed -f 1> ../data/CEBPB_homer_motif_with_ChIP_hg38.bed
+bedtools intersect -wa -a CEBPB_motif1_hg38.bed -b IDR_thres_peaks_ENCFF712ZNR.bed -f 1> CEBPB_motif1_with_IDR_thres_peaks_hg38.bed
 
-bedtools intersect -v -wa -a ../data/CEBPB_homer_motif_hg38.bed -b ../data/ENCFF712ZNR.bed > ../data/CEBPB_homer_motif_without_ChIP_hg38.bed
+bedtools intersect -v -wa -a CEBPB_motif1_hg38.bed -b all_peaks_ENCFF309ZJM.bed > CEBPB_motif1_no_peak_hg38.bed
 ```
 
 - Separate bound/unbound nucleosomes
-
+In the `data` directory at the top level of this repo, 
 ```{bash}
-./3a_get_binding_nuc.sh  ../data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed \
-  ../data/CEBPB_homer_motif_with_ChIP_hg38.bed 10 ../data/CEBPB_bound
-./3a_get_binding_nuc.sh  ../data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed \
-  ../data/CEBPB_homer_motif_without_ChIP_hg38.bed 10 ../data/CEBPB_unbound
-```
-
-- Randomly select 20000 unbound nucleosomes as control
-
-```{bash}
-shuf -n 10000 ../data/CEBPB_unbound/head_motif_nuc.bed > head_nuc_random_10000.bed
-shuf -n 10000 ../data/CEBPB_unbound/tail_motif_nuc.bed > tail_nuc_random_10000.bed
+../analysis/3a_get_binding_nuc.sh  k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.L140.bed \
+  ../data/CEBPB_motif1_with_IDR_thres_peaks_hg38.bed sample
+../analysis/3a_get_binding_nuc.sh  k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.L140.bed \
+  ../data/CEBPB_motif1_no_peak_hg38.bed control
 ```
 
 - Extract nucleosome sequence and predict for cyclizability
-
+In the `data` directory, the bound nucleosomes are stored in `head_sample.bed` and `tail_sample.bed`, while the unbound nucleosomes are stored in `head_control.bed` and `tail_control.bed`.
 The following command is used to extract bed file sequences. 
 ```{bash}
-homerTools extract hg38 <bed-file> -fa > <fasta-file> 
+homerTools extract <bed-file> hg38 -fa > <fasta-file> 
 ```
 Cyclizability is predicted by using `pred_fasta_cpu.sh` script in the directory `Cyclizability-Prediction-Website/`.

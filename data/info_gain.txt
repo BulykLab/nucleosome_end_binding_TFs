@@ -1,0 +1,3 @@
+"","TF","Experiment","InfoGain"
+"1","CEBPB","NCAP-SELEX_cycle-4",0.0429472504193892
+"2","CEBPB","HT-SELEX_cycle-4",0.17839295535119

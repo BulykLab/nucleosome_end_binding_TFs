@@ -40,10 +40,9 @@ chmod 777 selex_internal_cyc_script.sh # This is a script that will be generated
 ## 3. Cyclizability analysis of K562 nucleosomes bound\not bound by CEBPB
 
 - Download MNase-seq data from ENCODE
-
+In the `data` directory at the top level of this repo, 
 ```{bash}
 wget https://www.encodeproject.org/files/ENCFF000VMJ/@@download/ENCFF000VMJ.bam
-mv ENCFF000VMJ.bam ../data/
 ```
 
 - Call nucleosome peaks using DANPOS3
@@ -90,13 +89,18 @@ Download liftOver executable here: [https://genome-store.ucsc.edu/](https://geno
   <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.bed> \
   unMapped
 ```
-
-- Download ChIP-seq data
+- Filtering for nucleosome peaks with 140-bp
 
 ```{bash}
+awk -v OFS='\t' '{if($3-$2==140){print $1,$2,$3}}' <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.bed> > <path/to/data/k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.hg38.L140.bed>
+```
+
+- Download ChIP-seq data
+In the `data` directory at the top level of this repo, 
+```{bash}
 wget https://www.encodeproject.org/files/ENCFF712ZNR/@@download/ENCFF712ZNR.bed.gz
-mv ENCFF712ZNR.bed.gz ../data/
-gunzip ../data/ENCFF712ZNR.bed.gz
+gunzip ENCFF712ZNR.bed.gz
+mv ../
 ```
 
 - Use Homer to find CEBPB binding motifs and their positions.

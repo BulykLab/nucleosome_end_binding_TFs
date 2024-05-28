@@ -15,7 +15,7 @@ Install the following softwares to run analyses:
 
 1.  PEAR
 
-Go to [link](https://cme.h-its.org/exelixis/web/software/pear/) for instructions of downloading and installing PEAR software. Update path to pear executable in `analyses/config.R`.
+Go to [link](https://www.h-its.org/downloads/pear-academic/) for instructions of downloading and installing the newest version of PEAR software. Update path to pear executable in `analyses/config.R`.
 
 2.  DNAcycP
 

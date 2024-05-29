@@ -14,10 +14,8 @@ Set R working directory to be the current `figures/` directory.
 
 -   Fig. 2
 
--   Fig. 3
-To recreate Fig. 3 panel b, d, e, run script `Fig3.R`.
--   Fig. 4
-To recreate Fig. 4 panel b, c, d, e, f, run script `Fig4.R`.
+-   Fig. 3: To recreate Fig. 3 panel b, d, e, run script `Fig3.R`.
+-   Fig. 4: To recreate Fig. 4 panel b, c, d, e, f, run script `Fig4.R`.
 -   Fig. 5
 
 -   Supplementary/Extended Data Fig. 1

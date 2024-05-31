@@ -82,12 +82,14 @@ for (tf_name in tf_list){
     
     tf_selex_samples <- sapply(tf_sample_dirs, get_samples)
     
+    k = 7
     # Get information gain
     tf_sample_info_gains <- as.data.frame(sapply(
       tf_selex_samples,
       function(s) {
         ig = selex.infogain(s, k = c(k), markovModel = mm)
         print(ig)
+        print(k)
         return (ig)
       }
     ))

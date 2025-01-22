@@ -1,9 +1,8 @@
-source("config.R")
 source("utils.R")
-
+source("config.R")
 options(timeout = 500)
 
-tf_list = read.table(SELEX_library_file)$V1
+tf_list = c("SOX11")#read.table(SELEX_library_file)$V1
 
 
 ### Modify path here

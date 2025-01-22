@@ -1,12 +1,14 @@
 # Update variables to modify paths
 
-data_dir = "../data/"
+data_dir = "/home/katrina_liu/harvard/nucleosome_end_binding_TFs/data/"
 SELEX_data_dir = paste0(data_dir, "SELEX_data/")
 SELEX_data_report_tsv = paste0(data_dir, "filereport_read_run_PRJEB22684_tsv.txt") # Need to have
 SELEX_tf_list_file = paste0(data_dir, "lig147_tfs_test.txt") # Need to have
 SELEX_library_file = paste0(data_dir, "lig147_libs_test.txt") # Need to have
 SELEX_ligand = "lig147"
 SELEX_cache_dir = paste0(data_dir, "cache/")
+
+tri_mer_bend_file = paste0(data_dir, "rod_trinuc.txt")
 
 FW_primer = "CCCTACACGACGCTCTTCCGATCT"
 RV_primer = "AGATCGGAAGAGCACACGTCTG"
@@ -32,4 +34,4 @@ SELEX_fft_left = paste0(data_dir, "SELEX_fft_A_35_74.csv")
 SELEX_fft_right = paste0(data_dir, "SELEX_fft_A_76_115.csv")
 
 
-pear_path = "/home/xil493/capstone/pear-0.9.11-linux-x86_64/bin/pear" ##### Update path to pear
+pear_path = "/home/katrina_liu/harvard/capstone/pear-0.9.11-linux-x86_64/bin/pear" ##### Update path to pear

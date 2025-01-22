@@ -3,7 +3,7 @@ library(SELEX)
 source("utils.R")
 source("config.R")
 
-tf_list = read.table(SELEX_tf_list_file)$V1
+tf_list = c("SOX11")#read.table(SELEX_tf_list_file)$V1
 var_length <- 101
 exprs = c("NCAP-SELEX_cycle-4", "HT-SELEX_cycle-4")
 

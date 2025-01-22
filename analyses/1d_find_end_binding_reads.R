@@ -1,7 +1,7 @@
 source("utils.R")
 source("config.R")
 
-tf_list = read.table(SELEX_tf_list_file)$V1
+tf_list =  c("SOX11")#read.table(SELEX_tf_list_file)$V1
 data_dir <- paste0(SELEX_data_dir, SELEX_ligand, "/")
 k=7
 

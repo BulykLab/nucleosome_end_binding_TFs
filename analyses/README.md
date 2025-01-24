@@ -44,6 +44,11 @@ In the `data` directory at the top level of this repo,
 ```{bash}
 wget https://www.encodeproject.org/files/ENCFF000VMJ/@@download/ENCFF000VMJ.bam
 ```
+- Index the BAM file with samtools
+
+```{bash}
+samtools index ENCFF000VMJ.bam
+```
 
 - Call nucleosome peaks using DANPOS3
 

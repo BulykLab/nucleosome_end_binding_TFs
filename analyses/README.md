@@ -61,7 +61,7 @@ python danpos.py dpos <path/to/data/ENCFF000VMJ.bam> -o <path/to/data/k562_nucle
 In the `data` directory at the top level of this repo, convert DANPOS output `.xls` file to bed format.
 
 ```{bash}
-awk -v OFS='\t' '{if (NR>1) {print $1, $2, $3, $4, $5}} k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.xls > k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed
+awk -v OFS='\t' '{if (NR>1) {print $1, $2, $3, $4, $5}}' k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.xls > k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed
 ```
 
 - Verify nucleosome positions are not biased

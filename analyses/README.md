@@ -64,7 +64,7 @@ In the `data` directory at the top level of this repo, convert DANPOS output `.x
 awk -v OFS='\t' '{if (NR>1) {print $1, $2, $3, $4, $5}}' k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.xls > k562_nucleosomes/pooled/ENCFF000VMJ.smooth.positions.bed
 ```
 
-- Verify nucleosome positions are not biased
+- (Optional) Verify nucleosome positions are not biased
 
 Required packages: bedtools, bedops, seqoutbias
 

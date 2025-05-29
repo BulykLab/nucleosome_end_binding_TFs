@@ -3,6 +3,7 @@ library(patchwork)
 library(dplyr)
 library(ggpubr)
 library(viridis)
+library(rstatix)
 # Panel a place holder
 
 panel_a = plot_spacer()
@@ -10,7 +11,7 @@ panel_a = plot_spacer()
 
 # Panel b
 CEBPB_cyc_results = read.csv("../data/CEBPB_plot_df.csv")
-panel_b = ggplot(plot_df,aes(x=dist+25, y=avg, color=group))+geom_line(linewidth=0.8)+
+panel_b = ggplot(CEBPB_cyc_results,aes(x=dist+25, y=avg, color=group))+geom_line(linewidth=0.8)+
   theme_classic()+geom_ribbon(aes(ymin = low, ymax = high,fill=group), alpha = 0.2,  color=NA)+
   labs(x = "50-bp center position (bp)", 
        y="Sequence cyclizability (AU)", 
@@ -30,11 +31,11 @@ panel_b = ggplot(plot_df,aes(x=dist+25, y=avg, color=group))+geom_line(linewidth
         legend.spacing.y = unit(1.0, 'cm'),
         legend.margin=margin(t = 0, unit='cm'))+
   guides(fill = guide_legend(byrow = TRUE), color = guide_legend(byrow = TRUE))+
-  geom_rect(data=plot_df[1,], aes(xmin=25, xmax=25+23, ymin=-Inf, ymax=Inf),
+  geom_rect(data=CEBPB_cyc_results[1,], aes(xmin=25, xmax=25+23, ymin=-Inf, ymax=Inf),
             fill="gray", alpha=0.3, color=NA)+
-  geom_rect(data=plot_df[1,], aes(xmin=122-22, xmax=122, ymin=-Inf, ymax=Inf), 
+  geom_rect(data=CEBPB_cyc_results[1,], aes(xmin=122-22, xmax=122, ymin=-Inf, ymax=Inf), 
             fill="gray", alpha=0.3, color=NA)+
-  geom_rect(data=plot_df[1,], aes(xmin=25, xmax=49+10, ymin=-Inf, ymax=Inf), 
+  geom_rect(data=CEBPB_cyc_results[1,], aes(xmin=25, xmax=49+10, ymin=-Inf, ymax=Inf), 
             fill="#C1272D", alpha=0.2, color=NA)+
   geom_vline(xintercept = 74, linetype="dotted")
 
@@ -129,6 +130,9 @@ panel_f=ggplot(avg_height, aes(x=group, y=height,  group=group, color=group,fill
                          legend.key.height = unit(2.0, "line"),
                          legend.spacing.y = unit(0.5, 'cm'))+
   annotate("text", x=3, y=0.005, label=bquote("p = 1.08 x 10"^-27),size=2)
+
+res.aov <- anova_test(data = avg_height, dv = height, wid = tf, within = group)
+get_anova_table(res.aov)
 
 panel_f_schema_spacer = plot_spacer()
 

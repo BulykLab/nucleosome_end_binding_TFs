@@ -8,15 +8,19 @@ ggplot(ex_chr2_cyc, aes(x=dist, y=V2))+geom_line(color="#0000B2")+theme_classic(
 ggsave("Fig5a_example_locus_chr2_cyc.png", width=170, height=50, units="mm")
 
 
-sample = get_cycs("../data/CEBPB_k562_data/head_sample.csv",
-         "../data/CEBPB_k562_data/tail_sample.csv")
-control = get_cycs("../data/CEBPB_k562_data/head_control_clean.csv",
-                   "../data/CEBPB_k562_data/tail_control_clean.csv")
+# sample = get_cycs("../data/CEBPB_k562_data/head_sample.csv",
+#          "../data/CEBPB_k562_data/tail_sample.csv")
+# control = get_cycs("../data/CEBPB_k562_data/head_control_clean.csv",
+#                    "../data/CEBPB_k562_data/tail_control_clean.csv")
 
-sample_plot_df = build_plot_df(t(sample),"CEBPB", paste0("CEBPB-bound (n=",nrow(sample),")"))
-control_plot_df = build_plot_df(t(control), "CEBPB", paste0("CEBPB-unbound (n=",nrow(control),")"))
+# sample_plot_df = build_plot_df(t(sample),"CEBPB", paste0("CEBPB-bound (n=",nrow(sample),")"))
+# control_plot_df = build_plot_df(t(control), "CEBPB", paste0("CEBPB-unbound (n=",nrow(control),")"))
+# write.csv(sample_plot_df, "CEBPB_k562_sample.csv", row.names = F)
+# write.csv(control_plot_df, "CEBPB_k562_control.csv", row.names = F)
 
-library(ggplot2)
+sample_plot_df = read.csv("../data/CEBPB_k562_sample.csv")
+control_plot_df = read.csv("../data/CEBPB_k562_control.csv")
+
 ggplot(rbind(sample_plot_df, control_plot_df), aes(x=dist+24, y=avg, ymin=low, ymax=high, color=group))+
   geom_line()+geom_ribbon(aes(fill=group), color=NA, alpha=0.1)+theme_classic()+
   scale_color_manual(values=c("#FF938B","#0000B2"))+

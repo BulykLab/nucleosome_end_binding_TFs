@@ -9,9 +9,9 @@ ggsave("5a_example_locus_chr2_cyc.png", width=170, height=50, units="mm")
 
 
 sample = get_cycs("../data/CEBPB_k562_data/head_sample.csv",
-         ""../data/CEBPB_k562_data/tail_sample.csv")
-control = get_cycs(""../data/CEBPB_k562_data/head_control_clean.csv",
-                   ""../data/CEBPB_k562_data/tail_control_clean.csv")
+         "../data/CEBPB_k562_data/tail_sample.csv")
+control = get_cycs("../data/CEBPB_k562_data/head_control_clean.csv",
+                   "../data/CEBPB_k562_data/tail_control_clean.csv")
 
 sample_plot_df = build_plot_df(t(sample),"CEBPB", paste0("CEBPB-bound (n=",nrow(sample),")"))
 control_plot_df = build_plot_df(t(control), "CEBPB", paste0("CEBPB-unbound (n=",nrow(control),")"))
